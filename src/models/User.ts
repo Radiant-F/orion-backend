@@ -1,5 +1,4 @@
-// src/models/User.ts
-import mongoose, { Schema, Document } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
 export interface IUser extends Document {
   name: string;
@@ -7,7 +6,7 @@ export interface IUser extends Document {
   password: string;
 }
 
-const UserSchema: Schema = new Schema({
+const UserSchema = new Schema<IUser>({
   name: {
     type: String,
     required: true,
@@ -19,14 +18,16 @@ const UserSchema: Schema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true, // Ensure each email is unique
-    match: [/^\S+@\S+\.\S+$/, "Please use a valid email address."],
+    unique: true,
+    match: [/^\S+@\S+\.\S+$/, "Invalid email format."],
   },
   password: {
     type: String,
     required: true,
-    minlength: [6, "Password must be at least 6 characters long."],
+    minlength: 6,
   },
 });
 
-export default mongoose.model<IUser>("User", UserSchema);
+const User = model<IUser>("User", UserSchema);
+
+export default User;
